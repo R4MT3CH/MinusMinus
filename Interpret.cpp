@@ -285,14 +285,52 @@ void Interpret::printString(string s) {
 //   Note: this function will use precedence, nextToken, and a temporary operator stack
 //         that follows a infix to postfix algorithm
 int Interpret::equation(string exp, SymbolTable& local, bool& success){
-    Stack<string> postFix;
-    Stack<string> operatorStack;
+    
+        Stack<string> postFix;
+        Stack<string> operatorStack;
+        
+        int length = exp.length();
+        for(int i = 0; i < length; i++){
+            string token = nextToken(exp);
+            if(isalnum(token[0])){
+                postFix.push(token);
+            } else if(token == "("){
+                operatorStack.push(token);
+            } else if (isOperator(token)){
+                while((operatorStack.getStackSize() != 0) && (operatorStack.peek() != "(") && (precedence(token) <= precedence(operatorStack.peek()))){
+                    postFix.push(operatorStack.peek());
+                    operatorStack.pop();
+                }
+                operatorStack.push(token);
+            } else {
+                
+                while(operatorStack.peek() != "("){
+                    // cout << "IN WHILE LOOP: " << operatorStack.peek() << endl;
+                    postFix.push(operatorStack.peek());
+                    operatorStack.pop();
+                }
+                operatorStack.pop();
+            }
+        }
+        while(operatorStack.getStackSize() != 0){
+            postFix.push(operatorStack.peek());
+            operatorStack.pop();
+        }
+        
+        // now do equation and return answer
+        //for(int i = 0; i < postFix.getStackSize(); i++){
+          //  cout << "POSTFIX: " <<  postFix.peek(i, success) << endl;
+        //}
+        
+        //return calculate(postFix, local, success);
+        //return 1;
     
     //************************************************************************
     //  Put in your code to convert infix to postfix
     //************************************************************************
 
     // now do equation and return answer
+        
     return calculate(postFix, local, success);
 }
 
