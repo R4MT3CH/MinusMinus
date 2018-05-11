@@ -102,6 +102,7 @@ int Interpret::valueToken(string token, SymbolTable& local) {
 //   Note: use recursion when executing another function (save the lineNum in a local variable
 //   and restore when other function is done)
 bool Interpret::execute(int numParmsVars, SymbolTable& table) {
+    
     Stack<int> whiles;
     Symbol args, parm;
     int parmOffset = 0, count = 0; // parms actually start at 1 for stack frame, return value is at 0
@@ -111,6 +112,31 @@ bool Interpret::execute(int numParmsVars, SymbolTable& table) {
     //  Don't forget to be recursive when calling other MinusMinus functions
     //**********************************************************************
 
+	/* TIPS
+	need to use recursion and multiple symbol tables
+	every time you call another function, you're calling execute recursively.
+	use the same stack for all the different function variables.
+	numParmsVars is the number of parameters as well as the number of local variables in the function.
+	
+	when you call the function, you grab the parameters, push a return onto the stack, push the params onto a local symbol table,
+	and store the line numbers (which don't need to be pushed onto the stack), then pop everything off. retVal, after the function
+	executes, gets pushed to the top of the stack.
+	
+	pair variables in the symbol table with their offsets on the program stack.
+	stack stores the actual values in an integer array.
+	
+	EXAMPLE
+	x = 13;
+	table [0][0] = "x";
+	table [0][1] = 1;
+	stk[1] = 13;
+	
+	Symbol1.name = "count";
+	Symbol1.offset = stk.getSize();
+	push(0);
+	table.add(Symbol1);
+	*/
+	
     stk.pop(parmOffset); // remove the parameters
     return success;
 
